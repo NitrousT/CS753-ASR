@@ -1,9 +1,20 @@
 # AV-HuBERT (Audio-Visual Hidden Unit BERT) for ReVISE
 
+## Team ADAMs Apple (CS 753)
+Shubham Sharma, Danish Behnal, Atharva Mete
+
+## Contributions:
+* Pre-processing pipeline for LRS3 audio-visual benchmark
+* Infreence code for pre-trained AV-HuBERT
+* LoRA optimisation for linear layers 
+
+## TODO:
+* LoRA optimisation for conv layers
+
 ## Introduction
 AV-HuBERT is a self-supervised representation learning framework for audio-visual speech. It achieves state-of-the-art results in lip reading, ASR and audio-visual speech recognition on the LRS3 audio-visual speech benchmark.
 
-<img src="../assets/model.png" alt="Image" width="400">
+<img src="assets/model.png" alt="Image" width="400">
 
 ## Pre-trained and fine-tuned models
 
@@ -191,3 +202,18 @@ $ fairseq-hydra-train --config-dir /path/to/conf/ --config-name conf-name \
   task.data=/path/to/data task.label_dir=/path/to/label \
   task.tokenizer_bpe_model=/path/to/tokenizer model.w2v_path=/path/to/checkpoint \
   hydra.run.dir=/path/to/experiment/finetune/ common.user_dir=`pwd`
+```
+# Optimizing using LoRA
+As an alternative to updating all layers during fine tuning, we implement one such SOTA  technique: Low-rank adaptation (LoRA) by [Hu et al.](https://arxiv.org/abs/2106.09685) 
+
+A nice explanation of how it works is given in this [blog](https://lightning.ai/pages/community/tutorial/lora-llm/?s=08)
+
+Assuming the models are made lora compatible (code included in this repo on how to do that) you can finetune using the lora by:
+```sh
+  $ cd avhubert
+  $ fairseq-hydra-train_lora --config-dir /path/to/conf/ --config-name conf-name \
+    task.data=/path/to/data task.label_dir=/path/to/label \
+    task.tokenizer_bpe_model=/path/to/tokenizer model.w2v_path=/path/to/checkpoint \
+    hydra.run.dir=/path/to/experiment/finetune/ common.user_dir=`pwd 
+```
+
